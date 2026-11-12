@@ -35,6 +35,8 @@ func get(t *testing.T, finder PlanFinder, path string) *httptest.ResponseRecorde
 }
 
 func TestPlanEndpointReturnsSVGForKnownWarehouse(t *testing.T) {
+	t.Parallel()
+
 	finder := stubFinder{plans: map[string]plan.Plan{
 		"LYS-01": {WarehouseCode: "LYS-01", Width: 600, Height: 300, Zones: []plan.Zone{{Label: "Stockage"}}},
 	}}
@@ -53,6 +55,8 @@ func TestPlanEndpointReturnsSVGForKnownWarehouse(t *testing.T) {
 }
 
 func TestPlanEndpointStatusForUnsuccessfulLookups(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name   string
 		finder stubFinder
@@ -67,6 +71,8 @@ func TestPlanEndpointStatusForUnsuccessfulLookups(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			if got := get(t, tt.finder, tt.path).Code; got != tt.want {
 				t.Errorf("GET %s status = %d, want %d", tt.path, got, tt.want)
 			}
@@ -75,6 +81,8 @@ func TestPlanEndpointStatusForUnsuccessfulLookups(t *testing.T) {
 }
 
 func TestPlanEndpointDoesNotLeakRepositoryErrorToClient(t *testing.T) {
+	t.Parallel()
+
 	rec := get(t, stubFinder{err: errors.New("password authentication failed")}, "/plans/LYS-01.svg")
 
 	if strings.Contains(rec.Body.String(), "password") {
@@ -83,6 +91,8 @@ func TestPlanEndpointDoesNotLeakRepositoryErrorToClient(t *testing.T) {
 }
 
 func TestHealthzReportsOk(t *testing.T) {
+	t.Parallel()
+
 	rec := get(t, stubFinder{}, "/healthz")
 
 	if rec.Code != http.StatusOK {

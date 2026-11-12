@@ -7,6 +7,8 @@ import (
 )
 
 func TestSVGDrawsWarehouseOutlineWithPlanDimensions(t *testing.T) {
+	t.Parallel()
+
 	svg := Plan{WarehouseCode: "LYS-01", Width: 400, Height: 200}.SVG()
 
 	for _, want := range []string{`viewBox="0 0 400 200"`, `<rect x="0" y="0" width="400" height="200"`} {
@@ -17,6 +19,8 @@ func TestSVGDrawsWarehouseOutlineWithPlanDimensions(t *testing.T) {
 }
 
 func TestSVGDrawsOneLabelledRectanglePerZone(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name  string
 		zones []Zone
@@ -30,6 +34,8 @@ func TestSVGDrawsOneLabelledRectanglePerZone(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			svg := Plan{Width: 400, Height: 200, Zones: tt.zones}.SVG()
 
 			if got, want := strings.Count(svg, "<rect"), 1+len(tt.zones); got != want {
@@ -45,6 +51,8 @@ func TestSVGDrawsOneLabelledRectanglePerZone(t *testing.T) {
 }
 
 func TestSVGCentersLabelInsideItsZone(t *testing.T) {
+	t.Parallel()
+
 	svg := Plan{Width: 400, Height: 200, Zones: []Zone{{Label: "Quai", X: 10, Y: 20, Width: 100, Height: 50}}}.SVG()
 
 	if want := `<text x="60" y="45"`; !strings.Contains(svg, want) {
@@ -53,6 +61,8 @@ func TestSVGCentersLabelInsideItsZone(t *testing.T) {
 }
 
 func TestSVGEscapesMarkupInZoneLabels(t *testing.T) {
+	t.Parallel()
+
 	svg := Plan{Width: 100, Height: 100, Zones: []Zone{{Label: `<b>&"Quai"</b>`, Width: 10, Height: 10}}}.SVG()
 
 	if strings.Contains(svg, "<b>") {

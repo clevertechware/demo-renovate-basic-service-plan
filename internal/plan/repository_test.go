@@ -27,7 +27,7 @@ func newRepository(t *testing.T) *Repository {
 		t.Fatalf("start postgres container: %v", err)
 	}
 	t.Cleanup(func() {
-		if err := testcontainers.TerminateContainer(container); err != nil {
+		if err = testcontainers.TerminateContainer(container); err != nil {
 			t.Errorf("terminate postgres container: %v", err)
 		}
 	})
@@ -87,7 +87,7 @@ func TestRepositoryReturnsErrNotFoundForUnknownWarehouse(t *testing.T) {
 func TestMigrateAndSeedCanRunTwiceWithoutDuplicatingData(t *testing.T) {
 	ctx := context.Background()
 	repo := newRepository(t)
-	for i := 0; i < 2; i++ {
+	for i := range 2 {
 		if err := repo.Migrate(ctx); err != nil {
 			t.Fatalf("Migrate run %d: %v", i+1, err)
 		}
